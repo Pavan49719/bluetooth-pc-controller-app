@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-Rsrc-Class-Path: ./ bluecove-2.1.1.jar bluecove-bluez-2.1.1.jar
-Class-Path: .
-Rsrc-Main-Class: com.ganesh.apps.remotebluetooth.BluetoothMainGUI
-Main-Class: org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader
-
