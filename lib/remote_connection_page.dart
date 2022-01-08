@@ -159,272 +159,281 @@ class _RemoteConnectionPageState extends State<RemoteConnectionPage> {
     }).toList();
 
     return Scaffold(
+        backgroundColor: Color(0xFF0C111B),
         appBar: AppBar(
+          backgroundColor: Color(0xFF061C48),
           title: (isConnecting
-              ? Text('Connecting to ' + widget.server.name + '...')
+              ? Column(
+                  children: [
+                    Text(
+                      'Connecting with',
+                    ),
+                    Text(widget.server.name, style: TextStyle(fontSize: 15)),
+                  ],
+                )
               : isConnected
-                  ? Text('Connected with ' + widget.server.name)
-                  : Text('Disconnected with ' + widget.server.name)),
+                  ? Column(
+                      children: [
+                        Text(
+                          'Connected with',
+                        ),
+                        Text(widget.server.name,
+                            style: TextStyle(fontSize: 15)),
+                      ],
+                    )
+                  : Column(
+                      children: [
+                        Text(
+                          'Disconnected with',
+                        ),
+                        Text(widget.server.name,
+                            style: TextStyle(fontSize: 15)),
+                      ],
+                    )),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.close),
               onPressed: () => close(),
             ),
             IconButton(
-              icon: Icon(Icons.refresh),
+              icon: Icon(Icons.refresh, color: Colors.white),
               onPressed: isConnected ? null : () => connectToBluetooth(),
             ),
           ],
         ),
         body: SafeArea(
             child: Column(children: <Widget>[
-          _isJoystick
-              ? Container(
-                  color: Colors.white,
-                  child: JoystickView(
-                    interval: Duration(
-                      milliseconds: 50,
+          Flexible(
+            child: Row(
+              children: <Widget>[
+                GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onVerticalDragUpdate: (dragUpdate) => zoom(dragUpdate),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 8.0, 0, 8.0),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * (1 / 6),
+                      height: MediaQuery.of(context).size.height - 40,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          HoldDetector(
+                            onHold: () => zoom(DragUpdateDetails(
+                                delta: Offset(0.0, -1.0),
+                                globalPosition: null)),
+                            holdTimeout: Duration(milliseconds: 200),
+                            enableHapticFeedback: true,
+                            child: IconButton(
+                              onPressed: () => zoom(DragUpdateDetails(
+                                  delta: Offset(0.0, -1.0),
+                                  globalPosition: null)),
+                              icon: Icon(
+                                Icons.zoom_in,
+                                color: Colors.white,
+                              ),
+                              iconSize: 50,
+                            ),
+                          ),
+                          HoldDetector(
+                            onHold: () => zoom(DragUpdateDetails(
+                                delta: Offset(0.0, 1.0), globalPosition: null)),
+                            holdTimeout: Duration(milliseconds: 200),
+                            enableHapticFeedback: true,
+                            child: IconButton(
+                              onPressed: () => zoom(DragUpdateDetails(
+                                  delta: Offset(0.0, 1.0),
+                                  globalPosition: null)),
+                              icon: Icon(
+                                Icons.zoom_out,
+                                color: Colors.white,
+                              ),
+                              iconSize: 50,
+                            ),
+                          ),
+                        ],
+                      ),
+                      // Align(
+                      //   alignment: Alignment.center,
+                      //   child: RotatedBox(
+                      //     quarterTurns: 3,
+                      //     child: Text(
+                      //       'ZOOM',
+                      //       style: TextStyle(
+                      //         color: Colors.white,
+                      //         fontSize: 50,
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        gradient: LinearGradient(
+                          begin: Alignment.bottomRight,
+                          end: Alignment.topLeft,
+                          stops: [0.1, 0.5, 0.7, 0.9],
+                          colors: [
+                            Colors.brown[900],
+                            Colors.brown[300],
+                            Colors.brown[300],
+                            Colors.brown[900],
+                          ],
+                        ),
+                      ),
                     ),
-                    onDirectionChanged: (degrees, distance) =>
-                        directionChanged(degrees, distance),
-                  ),
-                )
-              : Flexible(
-                  child: Row(
-                    children: <Widget>[
-                      GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        onVerticalDragUpdate: (dragUpdate) => zoom(dragUpdate),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 8.0, 0, 8.0),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * (1 / 6),
-                            height: MediaQuery.of(context).size.height - 40,
-                            // color: Colors.red,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                HoldDetector(
-                                  onHold: () => zoom(DragUpdateDetails(
-                                      delta: Offset(0.0, -1.0),
-                                      globalPosition: null)),
-                                  holdTimeout: Duration(milliseconds: 200),
-                                  enableHapticFeedback: true,
-                                  child: IconButton(
-                                    onPressed: () => zoom(DragUpdateDetails(
-                                        delta: Offset(0.0, -1.0),
-                                        globalPosition: null)),
-                                    icon: Icon(
-                                      Icons.zoom_in,
-                                      color: Colors.white,
-                                    ),
-                                    iconSize: 50,
-                                  ),
-                                ),
-                                HoldDetector(
-                                  onHold: () => zoom(DragUpdateDetails(
-                                      delta: Offset(0.0, 1.0),
-                                      globalPosition: null)),
-                                  holdTimeout: Duration(milliseconds: 200),
-                                  enableHapticFeedback: true,
-                                  child: IconButton(
-                                    onPressed: () => zoom(DragUpdateDetails(
-                                        delta: Offset(0.0, 1.0),
-                                        globalPosition: null)),
-                                    icon: Icon(
-                                      Icons.zoom_out,
-                                      color: Colors.white,
-                                    ),
-                                    iconSize: 50,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            // Align(
-                            //   alignment: Alignment.center,
-                            //   child: RotatedBox(
-                            //     quarterTurns: 3,
-                            //     child: Text(
-                            //       'ZOOM',
-                            //       style: TextStyle(
-                            //         color: Colors.white,
-                            //         fontSize: 50,
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                              gradient: LinearGradient(
-                                begin: Alignment.bottomRight,
-                                end: Alignment.topLeft,
-                                stops: [0.1, 0.5, 0.7, 0.9],
-                                colors: [
-                                  Color.fromARGB(255, 238, 112, 2),
-                                  Color.fromARGB(220, 238, 112, 2),
-                                  Color.fromARGB(200, 238, 112, 2),
-                                  Color.fromARGB(150, 238, 112, 2),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      isGyroOn
-                          ? HoldDetector(
-                              onHold: () => setState(() {
-                                _onHold = true;
-                              }),
-                              onCancel: () => setState(() {
-                                _onHold = false;
-                              }),
-                              onTap: () => leftClickMouse(),
-                              holdTimeout: Duration(milliseconds: 200),
-                              enableHapticFeedback: true,
-                              child: TouchArea(
-                                dx: dx,
-                                dy: dy,
-                              ),
-                            )
-                          : GestureDetector(
-                              //To Do - Add scrolling gesture detector
-                              // onLongPressStart: (tap) => {
-                              //   print('onLongPressStart'),
-                              // },
-                              // onLongPressEnd: (tap) => {
-                              //   print('onLongPressEnd'),
-                              // },
-                              // onLongPressMoveUpdate: (tap) => {
-                              //   print('onLongPressEnd'),
-                              // },
-                              // onSecondaryTapUp: (tap) => {
-                              //   print('onSecondaryTapUp'),
-                              // },
-                              // onSecondaryTapCancel: () => {
-                              //   print('onSecondaryTapCancel'),
-                              // },
-                              // onForcePressStart: (tap) => {
-                              //   print('onForcePressStart'),
-                              // },
-                              // onTapUp: (tap) => {
-                              //   print('onTapUp'),
-                              // },
-                              // onTapCancel: () async => {
-                              //   print('onTapCancel'),
-                              //   if (await Vibration.hasVibrator())
-                              //     {
-                              //       Vibration.vibrate(duration: 100),
-                              //     }
-                              // },
-                              // onTapDown: (tap) => {
-                              //   print('onTapDown'),
-                              //   if (!_dragEnabled)
-                              //     {
-                              //       _leftClick = true,
-                              //       // _sendMessage("*#*LC*@*"),
-                              //       // Timer(Duration(seconds: 1), () {
-                              //       //   _leftClick = _dragEnabled;
-                              //       // }),
-                              //     }
-                              // },
-                              behavior: HitTestBehavior.translucent,
-                              onTap: () => leftClickMouse(),
-                              onDoubleTap: () => {
-                                doubleTapped = true,
-                                print('Double Tapped'),
-                              },
-                              // onPanUpdate: (dragUpdate) => onPan(dragUpdate),
-                              onScaleUpdate: _condition
-                                  ? (dragUpdate) => onScale(dragUpdate)
-                                  : null,
-                              onScaleEnd: (scaleEndDetails) => onScaleEnd(),
-                              child: TouchArea(
-                                dx: dx,
-                                dy: dy,
-                              ),
-                            ),
-                      GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        onVerticalDragUpdate: (dragUpdate) =>
-                            scroll(dragUpdate),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 8.0, 0, 8.0),
-                          child: Container(
-                            width:
-                                MediaQuery.of(context).size.width * (1 / 6) - 2,
-                            height: MediaQuery.of(context).size.height - 40,
-                            // color: Colors.deepPurpleAccent,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                HoldDetector(
-                                  onHold: () => scroll(DragUpdateDetails(
-                                      delta: Offset(0.0, -1.0),
-                                      globalPosition: null)),
-                                  holdTimeout: Duration(milliseconds: 200),
-                                  enableHapticFeedback: true,
-                                  child: IconButton(
-                                    onPressed: () => scroll(DragUpdateDetails(
-                                        delta: Offset(0.0, -1.0),
-                                        globalPosition: null)),
-                                    icon: Icon(
-                                      Icons.arrow_drop_up,
-                                      color: Colors.white,
-                                    ),
-                                    iconSize: 50,
-                                  ),
-                                ),
-                                HoldDetector(
-                                  onHold: () => scroll(DragUpdateDetails(
-                                      delta: Offset(0.0, 1.0),
-                                      globalPosition: null)),
-                                  holdTimeout: Duration(milliseconds: 200),
-                                  enableHapticFeedback: true,
-                                  child: IconButton(
-                                    onPressed: () => scroll(DragUpdateDetails(
-                                        delta: Offset(0.0, 1.0),
-                                        globalPosition: null)),
-                                    icon: Icon(
-                                      Icons.arrow_drop_down,
-                                      color: Colors.white,
-                                    ),
-                                    iconSize: 50,
-                                  ),
-                                ),
-                              ],
-                            ), // child: Align(
-                            //   alignment: Alignment.center,
-                            //   child: RotatedBox(
-                            //     quarterTurns: 3,
-                            //     child: Text(
-                            //       'SCROLL',
-                            //       style: TextStyle(
-                            //         color: Colors.white,
-                            //         fontSize: 50,
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                              gradient: LinearGradient(
-                                begin: Alignment.bottomRight,
-                                end: Alignment.topLeft,
-                                stops: [0.1, 0.5, 0.7, 0.9],
-                                colors: [
-                                  Color.fromARGB(255, 238, 112, 2),
-                                  Color.fromARGB(220, 238, 112, 2),
-                                  Color.fromARGB(200, 238, 112, 2),
-                                  Color.fromARGB(150, 238, 112, 2),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
                 ),
+                isGyroOn
+                    ? HoldDetector(
+                        onHold: () => setState(() {
+                          _onHold = true;
+                        }),
+                        onCancel: () => setState(() {
+                          _onHold = false;
+                        }),
+                        onTap: () => leftClickMouse(),
+                        holdTimeout: Duration(milliseconds: 200),
+                        enableHapticFeedback: true,
+                        child: TouchArea(
+                          dx: dx,
+                          dy: dy,
+                        ),
+                      )
+                    : GestureDetector(
+                        //To Do - Add scrolling gesture detector
+                        // onLongPressStart: (tap) => {
+                        //   print('onLongPressStart'),
+                        // },
+                        // onLongPressEnd: (tap) => {
+                        //   print('onLongPressEnd'),
+                        // },
+                        // onLongPressMoveUpdate: (tap) => {
+                        //   print('onLongPressEnd'),
+                        // },
+                        // onSecondaryTapUp: (tap) => {
+                        //   print('onSecondaryTapUp'),
+                        // },
+                        // onSecondaryTapCancel: () => {
+                        //   print('onSecondaryTapCancel'),
+                        // },
+                        // onForcePressStart: (tap) => {
+                        //   print('onForcePressStart'),
+                        // },
+                        // onTapUp: (tap) => {
+                        //   print('onTapUp'),
+                        // },
+                        // onTapCancel: () async => {
+                        //   print('onTapCancel'),
+                        //   if (await Vibration.hasVibrator())
+                        //     {
+                        //       Vibration.vibrate(duration: 100),
+                        //     }
+                        // },
+                        // onTapDown: (tap) => {
+                        //   print('onTapDown'),
+                        //   if (!_dragEnabled)
+                        //     {
+                        //       _leftClick = true,
+                        //       // _sendMessage("*#*LC*@*"),
+                        //       // Timer(Duration(seconds: 1), () {
+                        //       //   _leftClick = _dragEnabled;
+                        //       // }),
+                        //     }
+                        // },
+                        behavior: HitTestBehavior.translucent,
+                        onTap: () => leftClickMouse(),
+                        onDoubleTap: () => {
+                          doubleTapped = true,
+                          print('Double Tapped'),
+                        },
+                        // onPanUpdate: (dragUpdate) => onPan(dragUpdate),
+                        onScaleUpdate: _condition
+                            ? (dragUpdate) => onScale(dragUpdate)
+                            : null,
+                        onScaleEnd: (scaleEndDetails) => onScaleEnd(),
+                        child: TouchArea(
+                          dx: dx,
+                          dy: dy,
+                        ),
+                      ),
+                GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onVerticalDragUpdate: (dragUpdate) => scroll(dragUpdate),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 8.0, 0, 8.0),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * (1 / 6) - 2,
+                      height: MediaQuery.of(context).size.height - 40,
+                      // color: Colors.deepPurpleAccent,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          HoldDetector(
+                            onHold: () => scroll(DragUpdateDetails(
+                                delta: Offset(0.0, -1.0),
+                                globalPosition: null)),
+                            holdTimeout: Duration(milliseconds: 200),
+                            enableHapticFeedback: true,
+                            child: IconButton(
+                              onPressed: () => scroll(DragUpdateDetails(
+                                  delta: Offset(0.0, -1.0),
+                                  globalPosition: null)),
+                              icon: Icon(
+                                Icons.arrow_drop_up,
+                                color: Colors.white,
+                              ),
+                              iconSize: 50,
+                            ),
+                          ),
+                          HoldDetector(
+                            onHold: () => scroll(DragUpdateDetails(
+                                delta: Offset(0.0, 1.0), globalPosition: null)),
+                            holdTimeout: Duration(milliseconds: 200),
+                            enableHapticFeedback: true,
+                            child: IconButton(
+                              onPressed: () => scroll(DragUpdateDetails(
+                                  delta: Offset(0.0, 1.0),
+                                  globalPosition: null)),
+                              icon: Icon(
+                                Icons.arrow_drop_down,
+                                color: Colors.white,
+                              ),
+                              iconSize: 50,
+                            ),
+                          ),
+                        ],
+                      ), // child: Align(
+                      //   alignment: Alignment.center,
+                      //   child: RotatedBox(
+                      //     quarterTurns: 3,
+                      //     child: Text(
+                      //       'SCROLL',
+                      //       style: TextStyle(
+                      //         color: Colors.white,
+                      //         fontSize: 50,
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        gradient: LinearGradient(
+                          begin: Alignment.bottomRight,
+                          end: Alignment.topLeft,
+                          stops: [0.1, 0.5, 0.7, 0.9],
+                          colors: [
+                            Colors.brown[900],
+                            Colors.brown[300],
+                            Colors.brown[300],
+                            Colors.brown[900],
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
 
           // Flexible(
           //   child: ListView(
@@ -436,31 +445,46 @@ class _RemoteConnectionPageState extends State<RemoteConnectionPage> {
           Row(
             children: <Widget>[
               IconButton(
-                icon: const Icon(Icons.computer),
+                icon: const Icon(
+                  Icons.computer,
+                  color: Colors.white,
+                ),
                 iconSize: (MediaQuery.of(context).size.width / 5) - 16,
                 onPressed: isConnected ? () => present() : null,
                 tooltip: 'Present from beginning',
               ),
               IconButton(
-                icon: const Icon(Icons.desktop_windows),
+                icon: const Icon(
+                  Icons.desktop_windows,
+                  color: Colors.white,
+                ),
                 iconSize: (MediaQuery.of(context).size.width / 5) - 16,
                 onPressed: isConnected ? () => presentCurrent() : null,
                 tooltip: 'Present from current slide',
               ),
               IconButton(
-                icon: const Icon(Icons.chevron_left),
+                icon: const Icon(
+                  Icons.chevron_left,
+                  color: Colors.white,
+                ),
                 iconSize: (MediaQuery.of(context).size.width / 5) - 16,
                 onPressed: isConnected ? () => goLeft() : null,
                 tooltip: 'Next slide',
               ),
               IconButton(
-                icon: const Icon(Icons.chevron_right),
+                icon: const Icon(
+                  Icons.chevron_right,
+                  color: Colors.white,
+                ),
                 iconSize: (MediaQuery.of(context).size.width / 5) - 16,
                 onPressed: isConnected ? () => goRight() : null,
                 tooltip: 'Previous slide',
               ),
               IconButton(
-                icon: const Icon(Icons.close),
+                icon: const Icon(
+                  Icons.close,
+                  color: Colors.white,
+                ),
                 iconSize: (MediaQuery.of(context).size.width / 5) - 16,
                 onPressed: isConnected ? () => exit() : null,
                 tooltip: 'Close',
@@ -475,7 +499,11 @@ class _RemoteConnectionPageState extends State<RemoteConnectionPage> {
           // ),
 
           SwitchListTile(
-              title: Text('Gyro'),
+              inactiveTrackColor: Colors.grey,
+              title: Text(
+                'Gyro',
+                style: TextStyle(color: Colors.white),
+              ),
               onChanged: (isOn) => accelerometerControl(isOn),
               value: isGyroOn),
           Row(children: <Widget>[
@@ -498,7 +526,10 @@ class _RemoteConnectionPageState extends State<RemoteConnectionPage> {
             Container(
               margin: const EdgeInsets.all(8.0),
               child: IconButton(
-                  icon: const Icon(Icons.send),
+                  icon: const Icon(
+                    Icons.send,
+                    color: Colors.white,
+                  ),
                   onPressed: isConnected
                       ? () => _sendStringToType(textEditingController.text)
                       : null),
@@ -709,11 +740,11 @@ class TouchArea extends StatelessWidget {
             center: Alignment(dx, dy),
             tileMode: TileMode.repeated,
             colors: [
-              Color.fromARGB(150, 2, 130, 238),
-              Color.fromARGB(220, 2, 130, 238),
-              Color.fromARGB(255, 2, 130, 238),
-              Color.fromARGB(220, 2, 130, 238),
-              Color.fromARGB(150, 2, 130, 238),
+              Colors.grey[800],
+              Colors.grey[600],
+              Colors.grey[400],
+              Colors.grey[600],
+              Colors.grey[800],
             ],
           ),
         ),
