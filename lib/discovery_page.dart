@@ -64,7 +64,9 @@ class _DiscoveryPage extends State<DiscoveryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Color(0xFF0C111B),
         appBar: AppBar(
+          backgroundColor: Color(0xFF061C48),
           title: isDiscovering
               ? Text('Discovering devices')
               : Text('Discovered devices'),

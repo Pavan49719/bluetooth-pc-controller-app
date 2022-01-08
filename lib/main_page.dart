@@ -60,14 +60,17 @@ class _MainPage extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFF0C111B),
       appBar: AppBar(
         title: const Text('Bluetooth PC Remote'),
+        backgroundColor: Color(0xFF061C48),
       ),
       body: Container(
         child: ListView(
           children: <Widget>[
             SwitchListTile(
-              title: const Text('Enable Bluetooth'),
+              inactiveTrackColor: Colors.grey,
+              title: const Text('Enable Bluetooth',style: TextStyle(color: Colors.white),),
               value: _bluetoothState.isEnabled,
               onChanged: (bool value) {
                 // Do the request and update with the true value then
@@ -84,12 +87,12 @@ class _MainPage extends State<MainPage> {
               },
             ),
             Visibility(
-              child: ListTile(title: Text("Device Name : " + _name)),
+              child: ListTile(title: Text("Device Name : " + _name,style: TextStyle(color: Colors.white),)),
               visible: _bluetoothState.isEnabled,
             ),
             Visibility(
               child: ListTile(
-                  title: const Text('Devices discovery and connection')),
+                  title: const Text('Devices discovery and connection',style: TextStyle(color: Colors.white),)),
               visible: _bluetoothState.isEnabled,
             ),
             Visibility(
